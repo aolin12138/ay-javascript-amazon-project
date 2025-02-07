@@ -54,3 +54,29 @@ products.forEach(product => {
 })
 
 document.querySelector('.products-grid').innerHTML = html
+
+document.querySelectorAll('.add-to-cart-button').forEach(button => {
+  button.addEventListener('click', () => {
+    let productId = button.dataset.productId
+
+    let machingItem;
+
+    cart.forEach(item => {
+      if (item.productId === productId) {
+        machingItem = item
+        return
+      }
+    })
+
+    if (machingItem) {
+      machingItem.quantity++
+    } else {
+      cart.push({
+        productId: productId,
+        quantity: 1
+      })
+    }
+
+    console.log(cart)
+  })
+})
