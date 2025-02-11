@@ -1,5 +1,5 @@
 import { products } from "../data/products.js"
-import { cart } from "../script/cart.js"
+import { cart, addedToCart } from "../script/cart.js"
 
 let html = ''
 
@@ -61,27 +61,8 @@ document.querySelector('.products-grid').innerHTML = html
 document.querySelectorAll('.add-to-cart-button').forEach(button => {
   button.addEventListener('click', () => {
     let productId = button.dataset.productId
-
-    let machingItem;
-
-    cart.forEach(item => {
-      if (item.productId === productId) {
-        machingItem = item
-        return
-      }
-    })
-
-    if (machingItem) {
-      machingItem.quantity++
-    } else {
-      cart.push({
-        productId: productId,
-        quantity: 1
-      })
-    }
-
+    addedToCart(productId)
     addedItem(productId)
-
     calculateTotalQuantity()
   })
 })
