@@ -1,3 +1,6 @@
+import { products } from "../data/products.js"
+import { cart } from "../script/cart.js"
+
 let html = ''
 
 products.forEach(product => { 
@@ -102,7 +105,7 @@ function addedItem(productId) {
       clearTimeout(item.timeoutId)
     }
   })
-  
+
   const addedMessage = document.querySelector(`.added-to-cart-${productId}`)
   addedMessage.classList.add('added-to-cart-show')
   console.log(addedMessage)
