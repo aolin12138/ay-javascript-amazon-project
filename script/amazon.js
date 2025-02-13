@@ -1,6 +1,8 @@
 import { products } from "../data/products.js"
 import { cart, addedToCart } from "../script/cart.js"
 
+calculateTotalQuantity()
+
 let html = ''
 
 products.forEach(product => { 
@@ -69,11 +71,10 @@ document.querySelectorAll('.add-to-cart-button').forEach(button => {
 
 function calculateTotalQuantity() {
   let totalQuantity = 0
-
   cart.forEach(item => {
     totalQuantity += item.quantity
   })
-
+  
   document.querySelector('.cart-quantity').innerText = totalQuantity
 }
 

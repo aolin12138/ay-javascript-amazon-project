@@ -98,5 +98,6 @@ document.querySelectorAll('.delete-quantity-link').forEach(link => {
   link.addEventListener('click', () => {
     let productId = link.dataset.productId
     removeFromCart(productId)
+    calculateTotalQuantity()
   })
 })
