@@ -1,7 +1,9 @@
-import {cart, removeFromCart} from '../script/cart.js'
+import {cart, removeFromCart, saveToStorage} from '../script/cart.js'
 import {products} from '../data/products.js'
 
 let html = '';
+
+document.querySelector('.return-to-home-link').innerText = `${calculateQuantity()} items`
 
 const orderSumElement = document.querySelector('.order-summary')
 
@@ -33,11 +35,13 @@ cart.forEach(item => {
                       </div>
                       <div class="product-quantity">
                         <span>
-                          Quantity: <span class="quantity-label">${item.quantity}</span>
+                          Quantity: <span class="quantity-label-${item.productId}">${item.quantity}</span>
                         </span>
-                        <span class="update-quantity-link link-primary">
+                        <span class="update-quantity-link update-quantity-link-${item.productId} link-primary" data-product-id="${item.productId}">
                           Update
                         </span>
+                        <div class="product-quantity-select-${item.productId} product-quantity-select">
+                        </div>
                         <span class="delete-quantity-link link-primary" data-product-id = "${item.productId}">
                           Delete
                         </span>
@@ -101,3 +105,48 @@ document.querySelectorAll('.delete-quantity-link').forEach(link => {
     calculateTotalQuantity()
   })
 })
+
+document.querySelectorAll('.update-quantity-link').forEach(link => {
+  link.addEventListener('click', () => {
+    let productId = link.dataset.productId
+    let quantitySelect = document.querySelector(`.product-quantity-select-${productId}`)
+    quantitySelect.innerHTML = `
+      <input class = "quantity-input quantity-input-${productId}">
+      <span class = "save-quantity-link-${productId} link-primary">
+        Save
+      </span>
+    `
+
+    document.querySelector(`.quantity-label-${productId}`).innerHTML = ''
+    document.querySelector(`.update-quantity-link-${productId}`).innerHTML = ''
+    document.querySelector(`.save-quantity-link-${productId}`).addEventListener('click', () => {
+      saveQuantity(productId)
+    })
+  })
+})
+
+function saveQuantity(productId) {
+  let quantity = document.querySelector(`.quantity-input-${productId}`).value
+  let quantitySelect = document.querySelector(`.product-quantity-select-${productId}`)
+  if (quantity !== '') {
+    cart.forEach(item => {
+      if (item.productId === productId) {
+        item.quantity = Number(quantity)
+      }
+    })
+    document.querySelector(`.quantity-label-${productId}`).innerHTML = quantity
+  }
+
+  quantitySelect.innerHTML = ''
+  saveToStorage()
+  document.querySelector(`.update-quantity-link-${productId}`).innerHTML = 'Update'
+  document.querySelector('.return-to-home-link').innerText = `${calculateQuantity()} items`
+} 
+
+function calculateQuantity() {
+  let totalQuantity = 0
+  cart.forEach(item => {
+    totalQuantity += item.quantity
+  })
+  return totalQuantity
+}

@@ -74,7 +74,9 @@ function calculateTotalQuantity() {
   cart.forEach(item => {
     totalQuantity += item.quantity
   })
-  
+
+  console.log(totalQuantity)
+  console.log(document.querySelector('.cart-quantity'))
   document.querySelector('.cart-quantity').innerText = totalQuantity
 }
 
@@ -90,7 +92,6 @@ function addedItem(productId) {
 
   const addedMessage = document.querySelector(`.added-to-cart-${productId}`)
   addedMessage.classList.add('added-to-cart-show')
-  console.log(addedMessage)
 
   messageTimeOutId = setTimeout(() => {
     addedMessage.classList.remove('added-to-cart-show')
