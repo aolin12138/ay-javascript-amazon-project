@@ -2,6 +2,7 @@ import {cart, removeFromCart, saveToStorage} from '../cart.js'
 import {products} from '../../data/products.js'
 import { deliveryOptions } from '../deliveryOptions.js'
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js'
+import { renderPaymentSummary } from './paymentSummary.js';
 
 export function renderOrderSummary() {
   let html = '';
@@ -30,7 +31,7 @@ export function renderOrderSummary() {
     )
 
 
-
+    /*html*/
     html += `<div class="cart-item-container js-cart-item-container-${item.productId}">
                     <div class="delivery-date delivery-date-${item.productId}">
                       Delivery date: ${dayjs().add(deliveryOption.deliveryDays, 'day').format('dddd, MMMM D')}
@@ -80,6 +81,7 @@ export function renderOrderSummary() {
       let productId = input.dataset.productId
       changeDeliveryOption(productId, deliveryId)
       renderOrderSummary()
+      renderPaymentSummary()
     })
   })
 
@@ -124,16 +126,15 @@ function saveQuantity(productId) {
   )
 
   machingItem.quantity = quantity === '' ? machingItem.quantity : Number(quantity)
-  document.querySelector(`.quantity-label-${productId}`).innerHTML = machingItem.quantity
 
 
   quantitySelect.innerHTML = ''
   saveToStorage()
-  document.querySelector(`.update-quantity-link-${productId}`).innerHTML = 'Update'
-  document.querySelector('.return-to-home-link').innerText = `${calculateQuantity()} items`
+  renderOrderSummary()
+  renderPaymentSummary()
 } 
 
-function calculateQuantity() {
+export function calculateQuantity() {
   let totalQuantity = 0
   cart.forEach(item => {
     totalQuantity += item.quantity
