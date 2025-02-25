@@ -1,6 +1,6 @@
 import {cart, removeFromCart, saveToStorage} from '../cart.js'
 import {products} from '../../data/products.js'
-import { deliveryOptions } from '../deliveryOptions.js'
+import { deliveryOptions, calculateDeliveryDate } from '../deliveryOptions.js'
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js'
 import { renderPaymentSummary } from './paymentSummary.js';
 
@@ -30,11 +30,13 @@ export function renderOrderSummary() {
     }
     )
 
+    let deliveryDate = calculateDeliveryDate(deliveryOption)
+
 
     /*html*/
     html += `<div class="cart-item-container js-cart-item-container-${item.productId}">
                     <div class="delivery-date delivery-date-${item.productId}">
-                      Delivery date: ${dayjs().add(deliveryOption.deliveryDays, 'day').format('dddd, MMMM D')}
+                      Delivery date: ${deliveryDate.format('dddd, MMMM D')}
                     </div>
 
                     <div class="cart-item-details-grid">
@@ -89,7 +91,8 @@ export function renderOrderSummary() {
     link.addEventListener('click', () => {
       let productId = link.dataset.productId
       removeFromCart(productId)
-      calculateTotalQuantity()
+      renderOrderSummary()
+      renderPaymentSummary()
     })
   })
 
@@ -146,6 +149,8 @@ function deliveryOptionsHtml(productId, item) {
   let html = ''
 
   deliveryOptions.forEach(option => {
+    const deliveryDate = calculateDeliveryDate(option)
+
     html += `<div class="delivery-option"
       data-delivery-option-id="${option.id}"
       data-product-id="${productId}">
@@ -155,7 +160,7 @@ function deliveryOptionsHtml(productId, item) {
       name="delivery-option-${productId}">
     <div>
       <div class="delivery-option-date">
-        ${dayjs().add(option.deliveryDays, 'day').format('dddd, MMMM D')}
+        ${deliveryDate.format('dddd, MMMM D')}
       </div>
       <div class="delivery-option-price">
         ${option.deliveryPrice === 0 ? 'FREE Shipping' : `$${(option.deliveryPrice / 100).toFixed(2)} - Shipping`}
